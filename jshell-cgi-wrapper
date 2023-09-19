@@ -1,0 +1,52 @@
+#!/bin/bash
+
+# Define the library path
+LIB_PATH="/usr/local/lib/jshell/lib"
+
+# Check if the library path exists
+if [ ! -d "$LIB_PATH" ]; then
+    echo "Creating library path: $LIB_PATH"
+    mkdir -p "$LIB_PATH"
+fi
+
+# URL for the Gson JAR file
+GSON_URL="https://repo1.maven.org/maven2/com/google/code/gson/gson/2.8.2/gson-2.8.2.jar"
+
+# File name for the downloaded Gson JAR
+GSON_JAR_FILE="$LIB_PATH/gson-2.8.2.jar"
+
+# Check if the Gson JAR file already exists; if not, download it
+if [ ! -f "$GSON_JAR_FILE" ]; then
+    echo "Downloading Gson JAR..."
+    if ! curl -o "$GSON_JAR_FILE" "$GSON_URL"; then
+        echo "Failed to download Gson JAR."
+        exit 1
+    fi
+    echo "Gson JAR downloaded successfully."
+fi
+
+echo "Content-Type: application/json"
+echo 
+
+# Create a temporary directory
+TMP=$(mktemp -d)
+mkdir -p "$TMP/.java/.systemPrefs"
+mkdir -p "$TMP/.java/.userPrefs"
+chmod -R 755 "$TMP"
+
+# Prepare the JShell script
+tail -n +2 "$@" >> "$TMP/run"
+echo "/exit" >> "$TMP/run"
+
+# Set up Java classpath
+JAVA_LIBS=$(ls -d "${LIB_PATH}"/*.jar | tr '\n' ':' | sed 's/:$//')
+export CLASSPATH="$JAVA_LIBS"
+
+# Configure Java options
+export _JAVA_OPTIONS="-Djava.util.prefs.systemRoot=$TMP/.java -Djava.util.prefs.userRoot=$TMP/.java/.userPrefs" 
+
+# Run JShell with the script
+"$JAVA_HOME/bin/jshell" -q "$TMP/run"
+
+# Clean up the temporary directory
+rm -Rf "$TMP"
