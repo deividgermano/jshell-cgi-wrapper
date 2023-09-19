@@ -9,6 +9,8 @@ A CGI (Common Gateway Interface) wrapper for executing Java code using JShell vi
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Print Screen of Usage](#printusage)
+- [Code for Fun and Learning](#fun)
+- [For Educational Use Only](#foreducational)
 
 
 ## Description
@@ -56,3 +58,10 @@ Before using `jshell-cgi-wrapper`, ensure you have the following prerequisites:
 ![Call](images/1.png)
 ![Result](images/2.png)
 
+## Code for Fun and Learning
+
+This code is designed with a fun and learning mindset. Enjoy experimenting and discovering new things!
+
+## For Educational Use Only
+
+This code is intended for educational purposes and should not be used in production environments.
